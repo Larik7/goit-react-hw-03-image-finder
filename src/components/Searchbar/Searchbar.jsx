@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-// import {ImSearch} from 'react-icons'
-// import { ReactComponent as MyIcon } from '';
+import {FcSearch} from 'react-icons/fc'
 import { Input, SearchButton, SearchForm, SearchHeader, LabelButton } from "./Searchbar.styled";
 
 
@@ -32,7 +31,8 @@ export class Searchbar extends Component {
             <SearchHeader>
                 <SearchForm onSubmit={this.handleSubmit}>
                     <SearchButton type="submit">
-                    <LabelButton>Search</LabelButton>
+                        <FcSearch/>
+                        <LabelButton/>
                     </SearchButton>
 
                     <Input
@@ -40,7 +40,7 @@ export class Searchbar extends Component {
                         name="searchQuery"
                         autocomplete="off"
                         placeholder="Search images and photos"
-                        searchQuery={this.state.searchQuery}
+                        value={this.state.searchQuery}
                         onChange={this.handleChange}
                     />
                 </SearchForm>

@@ -13,8 +13,15 @@ export const GalleryList = styled.ul`
   margin-right: auto;
 `;
 
-// .ImageGalleryItem {
-//   border-radius: 2px;
-//   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
-//     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
-// }
+export const ListItem = styled.li`
+    border-radius: 2px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+`
+
+export const ErrorMessage = styled.p`
+    text-align: center;
+    color: tomato;
+    font-size: 18px;
+    font-weight: 500;
+`;

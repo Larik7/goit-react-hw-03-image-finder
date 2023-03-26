@@ -1,37 +1,23 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types';
-import { fetchPixabayApi } from '../service/API';
-import { GalleryList, ErrorMessage, ListItem } from './ImageGallery.style';
+import { fetchApi } from '../service/API';
+import { GalleryList, ErrorMessage, ListItem } from './ImageGallery.styled';
 import { GalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { LoadMore } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
 
-'idel'
-'pending'
-'resolve'
-'rejected'
-
 export class ImageGallery extends Component {
+
+    static propTypes = {
+        value: PropTypes.string.isRequired
+    };
+
     state = {
         images: [],
         page: 1,
-        Loading: false,
         error: null,
-        status: 'idel',
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.imageSearch !== this.props.imageSearch) {
-            // console.log('изменилось');
-            // console.log('prevProps.imageSearch: ', prevProps.imageSearch);
-            // console.log('this.props.imageSearch: ', this.props.imageSearch);
-
-            this.setState({ status: 'pending'});
-            fetch('https://pixabay.com/api/?q=cat&page=1&key=your_key&image_type=photo&orientation=horizontal&per_page=12')
-                .then(response => response.json())
-                .then(images => this.setState({ images }))
-                .finally(() => this.setState({ Loading: false }));
-        }
+        loading: false,
+        hits: 0,
     }
 
      componentDidUpdate(prevProps, prevState) {
@@ -49,8 +35,8 @@ export class ImageGallery extends Component {
 
     fetchImages = async () => {   
         try {
-            this.setState({ isLoading: true });
-            const resp = await fetchPixabayApi(this.props.value.trim(), this.state.page);
+            this.setState({ loading: true });
+            const resp = await fetchApi(this.props.value.trim(), this.state.page);
 
             if (!resp || resp.hits.length === 0) {
                 this.setState({
@@ -66,13 +52,13 @@ export class ImageGallery extends Component {
             })
             this.setState({hits: resp.totalHits})
             }
-            catch (err) {
-                this.setState({ error: String(err) });
-            }
-            finally {
-                this.setState({ isLoading: false });
-            }
+        catch (err) {
+            this.setState({ error: String(err) });
         }
+        finally {
+            this.setState({ loading: false });
+        }
+    }
     
 
     loadMore = () => {
@@ -80,26 +66,28 @@ export class ImageGallery extends Component {
     }
 
     render() {
+        const PER_PAGE = 12;
+        const { images, error, hits, loading } = this.state;
 
-        if (status === 'idel') {
-            return <h2>Что искать?</h2>
-        }
+        return (
+            <>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <GalleryList>
+                {images.length > 0 && 
+                images.map(image => (
+                    <ListItem key={image.id}>
+                        <GalleryItem image={image}/>
+                    </ListItem>
+                    
+                ))}
+            </GalleryList>
+                
+            {PER_PAGE < hits && (
+                <LoadMore handleClick={this.loadMore} />
+            )}
+            {loading && <Loader/>}
+            </>
+        )
 
-        if (status === 'pending') {
-            return <div>Loading</div>
-        }
-
-        if (status === 'rejected') {
-            return <h2>{error.message}</h2>
-        }
-
-        if (status === 'resolve') {
-            return <div>
-                <GalleryList>
-                    {this.state.images && <li>{this.state.images.images}</li>}
-                </GalleryList>
-            </div>
-        }
-        
     }
 }
